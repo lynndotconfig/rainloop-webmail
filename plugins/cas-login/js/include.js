@@ -14,8 +14,8 @@
                     ('View:RainLoop:Login' === sName || 'View/App/Login' === sName || 'LoginViewModel' === sName || 'LoginAppView' === sName)
                     )
             {
-                oViewModel.email('1070885222@qq.com');
-                oViewModel.password('www1990323');
+                oViewModel.email('11111@qq.com');
+                oViewModel.password('wwwww');
                 oViewModel.submitForm();
             }
 

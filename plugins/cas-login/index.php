@@ -1,6 +1,11 @@
 <?php
 class CasLoginPlugin extends \RainLoop\Plugins\AbstractPlugin
-{
+{   
+    /**
+     * @var \RainLoop\Providers\AccountManagement
+     */
+    private $oAccountManagementProvider;
+
     public function Init()
     {
         // $this->addHook('filter.login-credentials', 'FilterLoginCredentials');
@@ -8,19 +13,18 @@ class CasLoginPlugin extends \RainLoop\Plugins\AbstractPlugin
         // $this->addHook('filter.app-data', FilterAppData);
         // $this->addHook('filter.http-paths', FilterHttpPaths)
         $this->addHook('filter.application-config', FilterApplicationConfig);
+        $this->addHook('filter.pre-do-login', FilterPreDoLogin);
+        $this->addHook('service.after-logout', ServiceAfterLogout); 
         $this->addJs('js/include.js');
     }
 
-    // public function Support()                    
+    // public function Support()
     // {
     //     if(!\class_exists(phpCas))
     //     {
-    //         return 'phpCas extension should be installed before user this plugin';
+    //         return 'phpCas extension should be installed before enabling this plugin';
     //     }
     // }
-    // public function MainFabrica($sName, &$mResult)
-    // public function FilterHttpPaths(&$aPaths)
-
 
     public function AccountManagementProvider($oConfig)
     {
@@ -37,6 +41,7 @@ class CasLoginPlugin extends \RainLoop\Plugins\AbstractPlugin
         $oAccountManagementProvider = new \RainLoop\Providers\AccountManagement($oDriver);
         return $oAccountManagementProvider;
     }
+
 
     public function FilterApplicationConfig(&$oConfig)
     {
@@ -58,56 +63,36 @@ class CasLoginPlugin extends \RainLoop\Plugins\AbstractPlugin
         // The actual user authentication
         phpCAS::forceAuthentication(); 
 
-        // Handle logout requests
-        if (isset($_REQUEST['logout'])) {
-                phpCAS::logout();
-        }
-        RainLoop\ChromePhp::log("in cas login");
+        RainLoop\ChromePhp::log("in cas login redirect page");
 
+        $this->oAccountManagementProvider = $this->AccountManagementProvider($oConfig);
+    }
+
+    public function FilterPreDoLogin($sLogin, &$sEmail, &$sPassword)
+    {
         $sUser = phpCAS::getUser();
+        if ($sUser !== '' && $sUser == 'admin')
+        {
+            // TODO Admin login 
+            $sEmail = $sUser;
+            $sPassword = '12345';
+        }
+        else
+        {
+            $aResult = array();
+            $aResult = $this->oAccountManagementProvider->GetEmailAndPassword($sUser);
+            $sLogin = $sUser;
+            $sEmail = $aResult['email'];
+            $sPassword = $aResult['passwd'];
+            \RainLoop\ChromePhp::log('111111111111111111111111"'.$aResult['email']); 
+        }
 
-        $oAccountManagementProvider = $this->AccountManagementProvider($oConfig);
+    }
 
-        $aResult = array();
-
-
-        $aResult = $oAccountManagementProvider->GetEmailAndPassword($sUser);
-
-        $oConfig->set('labs','dev_email',$aResult['email']);
-        $oConfig->set('labs','dev_password',$aResult['passwd']);
-
-        RainLoop\ChromePhp::log('aResult:'.$aResult['email']);
-
-
-        //////////////////////////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////////
-        // //?????????????????????????????????????
-       
-
-        // ChromePhp::log('hello world');
-        // ChromePhp::log($oConfig);
-
-        // echo "in cas login funciton.user is ".phpCAS::getUser();
-        // $attr = phpCAS::getAttributes();
-        // var_dump($attr);
-        // foreach ($attr as $key => $value)
-        // {
-        //     if(!is_array($value))
-        //     {
-        //             echo '<li>' . $key . ' => ' . $value . '</li>';
-        //     }
-        //     else
-        //     {
-        //             echo '<li>' . $key . '</li>';
-        //             echo '<ul>';
-        //             foreach($value as $v)
-        //             {
-        //                     echo '<li>' . $v . '</li>';
-        //             }
-        //             echo '</ul>';
-        //     }
-        // }
-        // echo '</ul>';
+    public function ServiceAfterLogout()
+    {
+        // Handle logout requests
+        phpCAS::logout();
     }
 
     public function configMapping()
@@ -128,4 +113,3 @@ class CasLoginPlugin extends \RainLoop\Plugins\AbstractPlugin
                 ); 
     }
 }
-
