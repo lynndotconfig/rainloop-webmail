@@ -48,6 +48,11 @@
 		return Utils.isArray(mCapa) && Utils.isNormal(sName) && -1 < Utils.inArray(sName, mCapa);
 	};
 
+	SettingsStorage.prototype.getAllAccount = function ()
+	{
+		//get all acccount
+	};
+
 
 	module.exports = new SettingsStorage();
 

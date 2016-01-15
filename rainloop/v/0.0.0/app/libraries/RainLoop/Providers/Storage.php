@@ -70,6 +70,11 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 		return $this->oDriver->Get($oAccount, $iStorageType, $sKey, $mDefault);
 	}
 
+	public function GetAllAccounts()
+	{
+		return $this->oDriver->GetAllEmailAccounts();
+	}
+
 	/**
 	 * @param \RainLoop\Model\Account|string|null $oAccount
 	 * @param int $iStorageType

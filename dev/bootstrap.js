@@ -16,7 +16,8 @@
 			Enums = require('Common/Enums'),
 			Translator = require('Common/Translator'),
 
-			EmailModel = require('Model/Email')
+			EmailModel = require('Model/Email'),
+			AccountStore = require('Stores/User/Account')
 		;
 
 		Globals.__APP__ = App;
@@ -47,10 +48,11 @@
 		window['rl']['addSettingsViewModelForAdmin'] = _.bind(Plugins.addSettingsViewModelForAdmin, Plugins);
 
 		window['rl']['pluginRemoteRequest'] = _.bind(Plugins.remoteRequest, Plugins);
-		window['rl']['pluginSettingsGet'] = _.bind(Plugins.settingsGet, Plugins);
+		window['rl']['pluginh'] = _.bind(Plugins.settingsGet, Plugins);
 
 		window['rl']['EmailModel'] = EmailModel;
 		window['rl']['Enums'] = Enums;
+		window['rl']['AccountStore'] = AccountStore;		
 
 		window['__APP_BOOT'] = function (fCall) {
 

@@ -1260,6 +1260,7 @@ class Actions
 		if (!empty($sToken))
 		{
 			$aAccountHash = $bQ ? \RainLoop\Utils::DecodeKeyValuesQ($sToken) : \RainLoop\Utils::DecodeKeyValues($sToken);
+			ChromePhp::log($aAccountHash);
 			if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0] && // simple token validation
 				8 <= \count($aAccountHash) && // length checking
 				!empty($aAccountHash[7]) && // does short token exist
@@ -2366,7 +2367,7 @@ class Actions
 			{
 				$aAccounts = @\json_decode($sAccounts, true);
 			}
-
+			ChromePhp::log($aAccounts);
 			if (\is_array($aAccounts) && 0 < \count($aAccounts))
 			{
 				if (1 === \count($aAccounts))
@@ -2392,7 +2393,7 @@ class Actions
 						});
 					}
 				}
-
+				ChromePhp::log($aAccounts);
 				return $aAccounts;
 			}
 		}

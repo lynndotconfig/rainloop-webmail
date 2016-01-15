@@ -22,6 +22,7 @@
 		PackageStore = require('Stores/Admin/Package'),
 		CoreStore = require('Stores/Admin/Core'),
 		Remote = require('Remote/Admin/Ajax'),
+		AccountStore = require('Stores/User/Account'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractApp = require('App/Abstract')

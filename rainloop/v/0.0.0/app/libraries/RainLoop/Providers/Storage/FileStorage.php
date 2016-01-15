@@ -56,6 +56,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	 */
 	public function Get($oAccount, $iStorageType, $sKey, $mDefault = false)
 	{
+        \RainLoop\ChromePhp::log($sKey);
 		$mValue = false;
 		$sFileName = $this->generateFileName($oAccount, $iStorageType, $sKey);
 		if (\file_exists($sFileName))
@@ -199,5 +200,39 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	public function SetLogger($oLogger)
 	{
 		$this->oLogger = $oLogger instanceof \MailSo\Log\Logger ? $oLogger : null;
+	}
+
+    /**
+    * return array()
+    */
+	public function GetAllEmailAccounts()
+	{
+
+		$aEmail = array();
+		$iStorageType = \RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG;
+		$sCfgPath = $this->sDataPath.'/cfg';
+        if ($sPrePath = \opendir($sCfgPath)){
+            while (($sPath = \readdir($sPrePath))!=false){
+                if ($sPath == '.' || $sPath == '..'){
+                    continue;
+                }
+                else{
+                    $sFullPrePath = $sCfgPath.'/'.$sPath;
+                    if ($sEmailPath = \opendir($sFullPrePath)){
+                        while(($sEmail = \readdir($sEmailPath))!=false){
+                            if ($sEmail == '.' || $sEmail == '..'){
+                                continue;
+                            }
+                            else {
+                                \array_push($aEmail, $sEmail);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        \RainLoop\ChromePhp::log('101010'.$aEmail);
+
+        return $aEmail;
 	}
 }
